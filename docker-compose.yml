@@ -1,0 +1,237 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    hostname: zookeeper
+    container_name: zookeeper
+    restart: always
+    ports:
+      - '2181:2181'
+    volumes:
+      - zookeeper-data:/var/lib/zookeeper/data
+      # - zookeeper-logs:/var/lib/zookeeper/log
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: zookeeper
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9101
+    networks:
+      - rmoff_kafka
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    hostname: kafka
+    container_name: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - '9092:9092'
+    volumes:
+      - kafka:/kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      # KAFKA_LOG_DIRS: /kafka/logs
+      KAFKA_LOG_FLUSH_INTERVAL_MS: 60000
+      KAFKA_LOG_FLUSH_INTERVAL_MESSAGES: 1000
+      KAFKA_LOG_RETENTION_HOURS: 240
+      KAFKA_LOG_RETENTION_BYTES: 536870912000
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=9101
+    networks:
+      - rmoff_kafka
+
+  kafka_ui:
+    image: provectuslabs/kafka-ui
+    hostname: kafka_ui
+    container_name: kafka_ui
+    restart: always
+    ports:
+      - '7000:8080'
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_BROKERCONNECT: kafka:29092
+    depends_on:
+      - kafka
+      - zookeeper
+    networks:
+      - rmoff_kafka
+
+  event-service:
+    build: event-service
+    ports:
+      - "8001:50051"
+    depends_on:
+      - kafka
+      - event-service-db
+    networks:
+      - rmoff_kafka
+
+  event-service-db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - rmoff_kafka
+      
+  ticket-service:
+    build: TicketService
+    ports:
+      - "8002:50051"
+    environment:
+      MYSQL_HOST: ticket-service-db
+      MYSQL_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: admin
+    depends_on:
+      - kafka
+      - ticket-service-db
+    networks:
+      - rmoff_kafka
+
+  ticket-service-db:
+    build: mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - rmoff_kafka
+
+  user-service:
+    build: user-service
+    ports:
+      - "8003:8001"
+    depends_on:
+      - user-service-db
+      - kong
+    networks:
+      - rmoff_kafka
+
+  user-service-db:
+    image: mongo:latest
+    ports:
+      - "8004:27017"
+    networks:
+      - rmoff_kafka
+
+  kong-database:
+    image: postgres:9.6
+    container_name: kong-database
+    networks:
+      - rmoff_kafka
+    ports:
+      - "5555:5432"
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  kong-migrations:
+    image: kong:latest
+    command: kong migrations bootstrap
+    networks:
+      - rmoff_kafka
+    depends_on:
+      - kong-database
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+    restart: on-failure:20
+
+  kong:
+    image: kong:latest
+    container_name: kong
+    networks:
+      - rmoff_kafka
+    ports:
+      - "9000:8000"
+      - "9443:8443"
+      - "9001:8001"
+      - "9444:8444"
+    environment:
+      KONG_LOG_LEVEL: debug
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001, 0.0.0.0:8444 ssl"
+    volumes:
+      - ./kong/proto:/kong
+      - ./kong/google:/usr/include/google
+    depends_on:
+      - kong-migrations
+    healthcheck:
+      test: [ "CMD", "kong", "health" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: on-failure:20
+
+  kong-configure:
+    build: kong
+    container_name: kong-configure
+    # command: sh -c "pwd && sleep 10 && configure-kong.sh"
+    networks:
+      - rmoff_kafka
+    depends_on:
+      - kong
+    restart: on-failure:20
+
+  notification-service:
+    build: notification-service
+    container_name: notification-service
+    environment:
+      EMAIL_USER: patelakshay6702@gmail.com
+      EMAIL_PASS: dxxndyvydylsobsp
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL_PORT: 465
+    depends_on:
+      - kafka
+    networks:
+      - rmoff_kafka
+
+  feedback-service-db:
+    image: cockroachdb/cockroach:v21.2.6
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    networks:
+      - rmoff_kafka
+    volumes:
+      - /cockroach-data:/cockroach/cockroach-data
+    command: start-single-node --insecure
+
+  feedback-service:
+    build:
+      context: ./feedback-service
+    ports:
+      - "8009:50051"
+    networks:
+      - rmoff_kafka
+    depends_on:
+      - feedback-service-db
+    restart: on-failure:20
+
+volumes:
+  kafka:
+  zookeeper-data:
+
+networks:
+  rmoff_kafka:
+    name: rmoff_kafka
+
+
+# docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --create --topic topic-test-1
+# docker exec -it kafka kafka-topics --bootstrap-server localhost:9092 --delete --topic topic-test-1
