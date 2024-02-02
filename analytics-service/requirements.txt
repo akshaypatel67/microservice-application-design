@@ -1,0 +1,5 @@
+flask
+confluent_kafka
+grpcio
+protobuf
+requests
