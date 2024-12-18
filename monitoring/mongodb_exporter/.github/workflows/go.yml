@@ -1,0 +1,44 @@
+name: Go
+
+on:
+  schedule:
+    # run every Sunday
+    - cron: '0 13 * * 0'
+  push:
+    branches:
+      - main
+      - release-0.1x
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+*
+  pull_request:
+
+jobs:
+  build:
+    name: Build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - mongo:4.4
+          - mongo:5.0
+          - percona/percona-server-mongodb:4.4
+          - percona/percona-server-mongodb:5.0
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: ${{ github.workspace }}/go.mod
+
+      - name: Test
+        run: |
+          TEST_MONGODB_IMAGE=${{ matrix.image }} make test-cluster
+          sleep 10
+          make test-race
+          make test-cluster-clean

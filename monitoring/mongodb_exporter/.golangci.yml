@@ -1,0 +1,49 @@
+---
+linters-settings:
+  # prevent import of "errors" instead of "github.com/pkg/errors"
+  depguard:
+    rules:
+      # Name of a rule.
+      main:
+        # Packages that are not allowed where the value is a suggestion.
+        deny:
+          - pkg: "errors"
+            desc: Should be replaced by github.com/pkg/errors package
+
+  lll:
+    line-length: 140
+    tab-width: 4
+
+  unused:
+    check-exported: false
+
+  unparam:
+    check-exported: true
+
+  goimports:
+    # put imports beginning with prefix after 3rd-party packages;
+    # it's a comma-separated list of prefixes
+    local-prefixes: github.com/percona/mongodb_exporter
+
+linters:
+  enable-all: true
+  disable:
+      - lll
+      - unused
+      - testpackage
+      - wsl
+      - exhaustivestruct
+      - varnamelen
+      - maligned          #deprecated
+      - scopelint         #deprecated
+      - golint            #deprecated
+      - interfacer        #deprecated
+issues:
+  exclude-use-default: false
+  exclude:
+    # gas: Duplicated errcheck checks
+    - 'G104: Errors unhandled'
+  exclude-rules:
+  - path: _test\.go
+    linters:
+    - unused

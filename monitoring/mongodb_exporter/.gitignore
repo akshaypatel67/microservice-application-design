@@ -1,0 +1,9 @@
+.dist
+.env
+.vscode/
+.idea
+bin
+build
+dist
+mongodb_exporter
+.DS_Store
