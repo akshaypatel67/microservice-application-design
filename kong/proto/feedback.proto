@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package feedback;
+
+import "google/api/annotations.proto";
+
+option go_package = "./";
+
+service FeedbackService {
+    rpc GetFeedbacks(EventRequest) returns (Feedbacks) {
+        option (google.api.http) = {
+            post: "/feedback/list"
+            body: "*"
+          };
+    };
+    rpc CreateFeedback(Feedback) returns (Response) {
+        option (google.api.http) = {
+            post: "/feedback/create"
+            body: "*"
+          };
+    };
+}
+
+message EventRequest {
+    string event_id = 1;
+}
+
+message Feedback {
+    string event_id = 1;
+    string user_id = 2;
+    string ticket_id = 3;
+    int32 rating = 4;
+    string description = 5;
+}
+
+message Feedbacks {
+    repeated Feedback feedbacks = 1;
+}
+
+message Response {
+    string msg = 1;
+}
