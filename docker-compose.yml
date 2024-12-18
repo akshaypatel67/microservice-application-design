@@ -233,13 +233,6 @@ services:
     ports:
       - "8010:50051"
     # container_name: notification-service
-    # volumes:
-    #   - ./services/notification-service/protos/google:/grpc/google  
-    # environment:
-    #   EMAIL_USER: patelakshay6702@gmail.com
-    #   EMAIL_PASS: fkuviqaenyewopjo
-    #   EMAIL_HOST: smtp.gmail.com
-    #   EMAIL_PORT: 465
     depends_on:
       - kafka
     networks:
