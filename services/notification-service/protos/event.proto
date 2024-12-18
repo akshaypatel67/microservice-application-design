@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.example.event";
+option java_outer_classname = "EventServiceHelper";
+
+package event;
+
+service EventService {
+  rpc CreateEvent (Event) returns (Response) {};
+  rpc GetEvent (EventId) returns (Event) {};
+  rpc UpdateEvent (Event) returns (Response) {};
+  rpc DeleteEvent (EventId) returns (Response) {};
+  rpc ListEvents (Empty) returns (Events) {};
+}
+
+message Event {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int64 date = 4;
+  string location = 5;
+  int32 total = 6;
+  int32 booked = 7;
+  repeated bytes image = 8;
+  string user_id = 9;
+  double price = 10;
+}
+
+message Events {
+  repeated Event events = 1;
+}
+
+message Response {
+  string msg = 1;
+  string id = 2;
+}
+
+message EventId {
+  string id = 1;
+}
+
+message Empty {}

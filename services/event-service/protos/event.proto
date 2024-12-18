@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "org.example.event";
+option java_outer_classname = "EventServiceHelper";
+
+package event;
+
+import "google/api/annotations.proto";
+
+service EventService {
+  rpc CreateEvent (Event) returns (Response) {
+    option (google.api.http) = {
+      post: "/event/create"
+      body: "*"
+    };
+  };
+  rpc GetEvent (EventId) returns (Event) {
+    option (google.api.http) = {
+      post: "/event/get"
+      body: "*"
+    };
+  };
+  rpc UpdateEvent (Event) returns (Response) {
+    option (google.api.http) = {
+      post: "/event/update"
+      body: "*"
+    };
+  };
+  rpc DeleteEvent (EventId) returns (Response) {
+    option (google.api.http) = {
+      post: "/event/delete"
+      body: "*"
+    };
+  };
+  rpc ListEvents (Empty) returns (Events) {
+    option (google.api.http) = {
+      post: "/event/list"
+      body: "*"
+    };
+  };
+}
+
+message Event {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int64 date = 4;
+  string location = 5;
+  int32 total = 6;
+  int32 booked = 7;
+  repeated bytes image = 8;
+  string user_id = 9;
+  double price = 10;
+}
+
+message Events {
+  repeated Event events = 1;
+}
+
+message Response {
+  string msg = 1;
+  string id = 2;
+}
+
+message EventId {
+  string id = 1;
+}
+
+message Empty {}

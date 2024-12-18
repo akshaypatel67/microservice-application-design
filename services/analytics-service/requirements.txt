@@ -1,0 +1,8 @@
+confluent_kafka
+logger
+psycopg2-binary
+SQLAlchemy
+# grpcio
+# protobuf
+# requests
+# flask

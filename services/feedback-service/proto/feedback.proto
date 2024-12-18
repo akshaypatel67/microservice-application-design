@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package feedback;
+
+option go_package = "./";
+
+service FeedbackService {
+    rpc GetFeedbacks(EventRequest) returns (Feedbacks) {}
+    rpc CreateFeedback(Feedback) returns (Response) {}
+}
+
+message EventRequest {
+    string event_id = 1;
+}
+
+message Feedback {
+    string event_id = 1;
+    string user_id = 2;
+    string ticket_id = 3;
+    int32 rating = 4;
+    string description = 5;
+}
+
+message Feedbacks {
+    repeated Feedback feedbacks = 1;
+}
+
+message Response {
+    string msg = 1;
+}
