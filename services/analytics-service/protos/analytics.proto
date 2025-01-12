@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package analytics;
+
+service Analytics {
+    rpc Hoi (Msg) returns (Msg) {}
+    rpc GetEventPopularity (EventIdRequest) returns (EventPopularityResponse) {};
+    rpc GetUserDemographics (EventIdRequest) returns (UserDemographicsResponse) {};
+    rpc GetUserDemographicsFeedback (EventIdRequest) returns (UserDemographicsResponse) {};
+    rpc GetEventTrends (EventTrendsRequest) returns (EventTrendsResponse) {};
+    rpc GetTopEvents (EmptyMessage) returns (TopEventsResponse) {};
+}
+
+message EmptyMessage {}
+
+message Msg {
+    string message = 1;
+}
+
+message EventIdRequest {
+    string event_id = 1;
+}
+
+message EventTrendsRequest {
+    string event_id = 1;
+    string period = 2;
+}
+
+message EventPopularityResponse {
+    map<string, EventPopularityBody> event_popularity = 1;
+}
+
+message UserDemographicsResponse {
+    map<string, UserDemographicsBody> user_demographics = 1;
+}
+
+message EventTrendsResponse {
+    map<string, EventTrendsBody> event_trends = 1;
+}
+
+message TopEventsResponse {
+    repeated TopEventsBody top_events = 1;
+}
+
+message EventPopularityBody {
+    string event_id = 1;
+    string name = 2;
+    int32 total_booked_tickets = 3;
+    int32 total_cancelled_tickets = 4;
+    int32 visit_count = 5;
+    double average_ratings = 6;
+}
+
+message UserDemographicsBody {
+    GenderDistribution gender_distribution = 1;
+    AgeDistribution age_distribution = 2;
+}
+
+message GenderDistribution {
+    float Male = 1;
+    float Female = 2;
+    float Other = 3;
+}
+
+message AgeDistribution {
+    float _0_17 = 1;
+    float _18_30 = 2;
+    float _31_50 = 3;
+    float _51_100 = 4;
+}
+
+message EventTrendsBody {
+    map<string, int32> period_wise_booking = 1;
+}
+
+message TopEventsBody {
+    string event_id = 1;
+    string name = 2;
+    int32 total_booked_tickets = 3;
+}

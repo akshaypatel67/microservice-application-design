@@ -26,8 +26,10 @@ class BaseConsumer:
                     continue
                 self.process_message(message=msg.value().decode('utf-8'), key=(msg.key() or b"").decode('utf-8'))
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            logging.error(f"Error decoding JSON: {e}")
         except KeyboardInterrupt:
             logging.info("Shutting down consumer...")
+        except Exception as e:
+            logging.error(str(e))
         finally:
             self.consumer.close()

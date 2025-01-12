@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Make port 5001 available to the world outside this container
-EXPOSE 5001
+# Make port 50051 available to the world outside this container
+EXPOSE 50051 8000
 
 # Run analytics service when the container launches
-CMD ["python", "-u", "./main.py"]
+CMD ["python", "-u", "./main.py", "&&", "gunicorn", "--bind", "0.0.0.0:8000", "server:app"]

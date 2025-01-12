@@ -1,10 +1,20 @@
 import logging
 import threading
+
+import grpc
+from concurrent import futures
+import protos.grpc_compiled.analytics_pb2_grpc as pb2_grpc
+
 from consumers.base_kafka_consumer import BaseConsumer
 from consumers.visit_event_consumer import process_message as process_visit_event_message
 from consumers.ticket_status_event_consumer import process_message as process_ticket_status_event_message
 from consumers.upsert_data_consumer import process_message as process_upsert_data_event_message
 from consumers.feedback_event_consumer import process_message as process_feedback_event_message
+
+from server import AnalyticsService
+
+import http_server
+
 from db.connection import engine, session
 from db.models import create_models
 
@@ -42,9 +52,19 @@ def main():
     """Main function to start all consumers."""
     logging.info("Starting analytics service...")
 
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    pb2_grpc.add_AnalyticsServicer_to_server(AnalyticsService(), server)
+    server.add_insecure_port('[::]:50051')
+    server.start()
+    logging.info("Starting grpc server...")
+
+    http_server_thread = threading.Thread(target=http_server.app.run, args=('0.0.0.0', 8000))
+    http_server_thread.start()
+
     create_models(engine)
     
     start_consumers()
+    server.wait_for_termination()
 
 if __name__ == "__main__":
     main()
