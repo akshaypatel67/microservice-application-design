@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.34.0 (cbf2835db)
+  labels:
+    io.kompose.service: kong-migrations
+  name: kong-migrations
+spec:
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.34.0 (cbf2835db)
+      labels:
+        io.kompose.service: kong-migrations
+    spec:
+      containers:
+        - args:
+            - kong
+            - migrations
+            - bootstrap
+          env:
+            - name: KONG_DATABASE
+              value: postgres
+            - name: KONG_PG_HOST
+              value: kong-database
+          image: kong:latest
+          name: kong-migrations
+      restartPolicy: OnFailure

@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  kong.conf: plugins = bundled, kong-jwt2header
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: kong
+  name: kong-cm4

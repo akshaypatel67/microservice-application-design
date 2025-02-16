@@ -1,0 +1,10 @@
+apiVersion: v1
+data:
+  schema.lua: "local typedefs = require \"kong.db.schema.typedefs\"\n\n\nreturn {\n  name = \"jwt-to-header\",\n  fields = {\n    {\n      route = typedefs.no_route,\n    },\n    {\n      service = typedefs.no_service,\n    },\n    {\n      consumer = typedefs.no_consumer,\n    },\n    {\n      protocols = typedefs.protocols_http,\n    },\n    {\n      config = {\n        type = \"record\",\n        fields = {\n            {  strip_claims = { type     = \"string\", required = true, default  = \"false\" }, },\n            {  token_required = { type     = \"string\", required = true, default  = \"true\" }, },          \n        },\n      },\n    },\n  },\n}"
+kind: ConfigMap
+metadata:
+  annotations:
+    use-subpath: "true"
+  labels:
+    io.kompose.service: kong
+  name: kong-cm3

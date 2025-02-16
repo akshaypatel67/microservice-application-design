@@ -1,0 +1,181 @@
+apiVersion: v1
+data:
+  event.proto: |-
+    syntax = "proto3";
+
+    option java_multiple_files = true;
+    option java_package = "org.example.event";
+    option java_outer_classname = "EventServiceHelper";
+
+    package event;
+
+    import "google/api/annotations.proto";
+
+    service EventService {
+      rpc CreateEvent (Event) returns (Response) {
+        option (google.api.http) = {
+          post: "/event/create"
+          body: "*"
+        };
+      };
+      rpc GetEvent (EventId) returns (Event) {
+        option (google.api.http) = {
+          post: "/event/get"
+          body: "*"
+        };
+      };
+      rpc UpdateEvent (Event) returns (Response) {
+        option (google.api.http) = {
+          post: "/event/update"
+          body: "*"
+        };
+      };
+      rpc DeleteEvent (EventId) returns (Response) {
+        option (google.api.http) = {
+          post: "/event/delete"
+          body: "*"
+        };
+      };
+      rpc ListEvents (Empty) returns (Events) {
+        option (google.api.http) = {
+          post: "/event/list"
+          body: "*"
+        };
+      };
+    }
+
+    message Event {
+      string id = 1;
+      string name = 2;
+      string description = 3;
+      int64 date = 4;
+      string location = 5;
+      int32 total = 6;
+      int32 booked = 7;
+      repeated bytes image = 8;
+      string user_id = 9;
+      double price = 10;
+    }
+
+    message Events {
+      repeated Event events = 1;
+    }
+
+    message Response {
+      string msg = 1;
+      string id = 2;
+    }
+
+    message EventId {
+      string id = 1;
+    }
+
+    message Empty {}
+  feedback.proto: |-
+    syntax = "proto3";
+
+    package feedback;
+
+    import "google/api/annotations.proto";
+
+    option go_package = "./";
+
+    service FeedbackService {
+        rpc GetFeedbacks(EventRequest) returns (Feedbacks) {
+            option (google.api.http) = {
+                post: "/feedback/list"
+                body: "*"
+              };
+        };
+        rpc CreateFeedback(Feedback) returns (Response) {
+            option (google.api.http) = {
+                post: "/feedback/create"
+                body: "*"
+              };
+        };
+    }
+
+    message EventRequest {
+        string event_id = 1;
+    }
+
+    message Feedback {
+        string event_id = 1;
+        string user_id = 2;
+        string ticket_id = 3;
+        int32 rating = 4;
+        string description = 5;
+    }
+
+    message Feedbacks {
+        repeated Feedback feedbacks = 1;
+    }
+
+    message Response {
+        string msg = 1;
+    }
+  ticket.proto: |-
+    syntax = "proto3";
+
+    option java_multiple_files = true;
+    option java_package = "org.example.ticket";
+    option java_outer_classname = "EventTicket";
+
+    package ticket;
+
+    import "google/api/annotations.proto";
+
+    service TicketService {
+        rpc BookTicket (EventRequest) returns (Ticket) {
+            option (google.api.http) = {
+                post: "/ticket/create"
+                body: "*"
+              };
+        }
+        rpc CancelTicket (TicketRequest) returns (TicketResponse) {
+            option (google.api.http) = {
+                post: "/ticket/cancel"
+                body: "*"
+              };
+        }
+        rpc GetTicket (TicketRequest) returns (Ticket) {
+            option (google.api.http) = {
+                post: "/ticket/get"
+                body: "*"
+              };
+        }
+        rpc GetTickets (EventRequest) returns (stream Ticket) {}
+    }
+
+    message EventRequest {
+        string event_id = 1;
+        string user_id = 2;
+    }
+
+    message TicketRequest {
+        string ticket_id = 1;
+        string user_id = 2;
+    }
+
+    message TicketResponse {
+        string message = 1;
+    }
+
+    message Ticket {
+        string ticket_id = 1;
+        string user_id = 2;
+        string event_id = 3;
+        int64 date_purchased = 4;
+        enum StatusCode {
+            PENDING = 0;
+            BOOKED = 1;
+            CANCELLED = 2;
+            INVALID = 3;
+        }
+        StatusCode status = 5;
+    }
+kind: ConfigMap
+metadata:
+  labels:
+    io.kompose.service: kong
+  name: kong-cm0
