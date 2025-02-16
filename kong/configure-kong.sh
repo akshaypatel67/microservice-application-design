@@ -73,10 +73,14 @@ add_route "ticket-service" "/ticket" "ticket-route"
 add_service "feedback-service" "grpc://feedback-service:50051"
 add_route "feedback-service" "/feedback" "feedback-route" 
 
+add_service "analytics-service" "http://analytics-service:8000/analytics"
+add_route "analytics-service" "/analytics" "analytics-route"
+
 # Add JWT plugin to services
 add_jwt "event-service"
 add_jwt "ticket-service"
 add_jwt "feedback-service"
+add_jwt "analytics-service"
 
 # Add GRPC plugin to services
 add_grpc "event-service" "event"

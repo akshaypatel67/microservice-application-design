@@ -162,6 +162,7 @@ function getEventObjectFromPayload(data, userId) {
         location: data.location,
         seats: {
             total: data.total,
+            booked: 0,
         },
         user_id: userId,
         price: data.price,

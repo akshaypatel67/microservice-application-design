@@ -60,7 +60,7 @@ class User(Base):
     __tablename__ = 'user_profile'
 
     id = Column(String, primary_key=True)
-    email = Column(String, nullable=False)
+    email = Column(String, unique=True)
     name = Column(String, nullable=False)
     gender = Column(String, nullable=True)
     age = Column(Integer, nullable=True)
@@ -68,6 +68,7 @@ class User(Base):
     # Relationship with Event
     ticket_histories = relationship('TicketHistory', back_populates='user_profile')
     feedbacks = relationship('Feedback', back_populates='user_profile')
+
 
 # =========================== Feedback =========================== #
 class Feedback(Base):
