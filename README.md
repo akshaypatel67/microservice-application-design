@@ -44,6 +44,7 @@ This platform enables users to register, book tickets, manage events, and provid
 ### Other Tools
 - **Docker** (Containerization)
 - **Docker Compose** (Deployment)
+- **Kubernetes** (Deployment, Scalling, Orchestration)
 - **EmailJS** (Email Notifications)
 
 ---
@@ -139,6 +140,47 @@ The project adheres to key microservices principles:
    - **Service Orchestration:** All services, databases, Kafka, and Zookeeper are orchestrated using Docker Compose.
    - **Volume Management:** Persistent storage is enabled for Zookeeper and Kafka logs.
    - **Health Checks:** Defined for Kong to ensure availability.
+
+---
+
+## Kubernetes Deployment
+
+The project now supports **Kubernetes** for container orchestration, ensuring scalability and high availability.
+
+### Deployment Steps
+
+1.  **Ensure Kubernetes Cluster is Set Up**
+    
+    -   Use Minikube for local testing or deploy on a managed Kubernetes service (EKS, AKS, GKE).
+2.  **Apply Configurations**
+    
+    ```sh
+    kubectl apply -f kubernetes/configs/
+    kubectl apply -f kubernetes/deployments/
+    kubectl apply -f kubernetes/services/
+    kubectl apply -f kubernetes/jobs/
+    kubectl apply -f kubernetes/volumes/
+    
+    ```
+    
+3.  **Verify Deployments**
+    
+    ```sh
+    kubectl get pods
+    kubectl get services
+    kubectl get jobs
+    kubectl get pvc
+    
+    ```
+    
+
+### Kubernetes Components
+
+-   **ConfigMaps:** Kong configuration files (`configs/kong-cm0-configmap.yaml`, etc.)
+-   **Deployments:** Each service has its own deployment YAML file (`kubernetes/deployments/`).
+-   **Services:** Exposes applications via Kubernetes Services.
+-   **Jobs:** One-time or batch processing jobs (`kubernetes/jobs/`).
+-   **Volumes:** Persistent storage for databases and services (`kubernetes/volumes/`).
 
 ---
 
