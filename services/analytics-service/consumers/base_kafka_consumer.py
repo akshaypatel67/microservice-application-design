@@ -3,7 +3,7 @@ import logging
 import json
 
 conf = {
-    'bootstrap.servers': 'kafka:9092',
+    'bootstrap.servers': 'kafka-cluster.default.svc.cluster.local:9092',
     'group.id': 'analytics_service_group',
     'auto.offset.reset': 'earliest'
 }

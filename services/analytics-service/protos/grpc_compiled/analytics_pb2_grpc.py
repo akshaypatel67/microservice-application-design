@@ -26,9 +26,7 @@ if _version_not_supported:
 
 
 class AnalyticsStub(object):
-    """import "google/api/annotations.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
         """Constructor.
@@ -69,9 +67,7 @@ class AnalyticsStub(object):
 
 
 class AnalyticsServicer(object):
-    """import "google/api/annotations.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     def Hoi(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -80,51 +76,31 @@ class AnalyticsServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetEventPopularity(self, request, context):
-        """option (google.api.http) = {
-        post: "/analytics/event_popularity"
-        body: "*"
-        };
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserDemographics(self, request, context):
-        """option (google.api.http) = {
-        post: "/analytics/event_demographics"
-        body: "*"
-        };
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserDemographicsFeedback(self, request, context):
-        """option (google.api.http) = {
-        post: "/analytics/event_demographics_feedback"
-        body: "*"
-        };
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetEventTrends(self, request, context):
-        """option (google.api.http) = {
-        post: "/analytics/event_trends"
-        body: "*"
-        };
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTopEvents(self, request, context):
-        """option (google.api.http) = {
-        get: "/analytics/top_events"
-        body: "*"
-        };
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -171,9 +147,7 @@ def add_AnalyticsServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class Analytics(object):
-    """import "google/api/annotations.proto";
-
-    """
+    """Missing associated documentation comment in .proto file."""
 
     @staticmethod
     def Hoi(request,
