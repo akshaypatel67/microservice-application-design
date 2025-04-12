@@ -17,7 +17,7 @@ public class KafkaProducerImpl {
     private KafkaProducerImpl() throws UnknownHostException {
         Properties config = new Properties();
         config.put("client.id", InetAddress.getLocalHost().getHostName());
-        config.put("bootstrap.servers", "kafka:9092");
+        config.put("bootstrap.servers", "kafka-cluster.default.svc.cluster.local:9092");
         config.put("acks", "all");
         config.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         config.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");

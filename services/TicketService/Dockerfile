@@ -11,4 +11,4 @@ COPY . /app
 EXPOSE 50051
 
 # Command to run your application
-CMD ["./gradlew", "run"]
+CMD ["./gradlew", "run", "--no-daemon"]

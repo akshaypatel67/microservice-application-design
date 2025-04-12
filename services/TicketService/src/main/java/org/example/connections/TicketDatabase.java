@@ -23,6 +23,7 @@ public class TicketDatabase {
         String username = System.getenv("DB_USER");
         String password = System.getenv("DB_PASSWORD");
         conn = DriverManager.getConnection(CONNECTION_URL, username, password);
+        System.out.println("Connected to the database");
     }
 
     public static synchronized TicketDatabase getConnection() throws SQLException {
