@@ -211,7 +211,7 @@ func selectRecordsByEventID(db *sql.DB, eventID string) ([]Record, error) {
 func main() {
 	var err error
 	producer, err = kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "kafka:9092",
+		"bootstrap.servers": "kafka-cluster.default.svc.cluster.local:9092",
 		"client.id": "feedback-producer",
 		"acks": "all"})
 	

@@ -3,7 +3,7 @@ var producer;
 
 const kafka = new kafkajs.Kafka({
     clientId: 'user-producer',
-    brokers: ["kafka:9092"], // url 'kafka' is the host and port is 9092
+    brokers: ["kafka-cluster.default.svc.cluster.local:9092"], // url 'kafka' is the host and port is 9092
     retry: {
         initialRetryTime: 5000,     // initial retry time in milliseconds
         maxRetryTime: 30000,       // maximum retry time in milliseconds

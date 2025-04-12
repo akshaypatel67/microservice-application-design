@@ -44,6 +44,9 @@ const configureJWT = async () => {
         })
         .on('end', () => {
             console.log(data);
+            if (JSON.parse(data)?.message === "Not found") {
+                request.emit('error', new Error("Invalid JSON response"));
+            }
             process.env.ACCESS_TOKEN_SECRET = JSON.parse(data).secret;
             process.env.KEY = JSON.parse(data).key;
             console.log(process.env.KEY);
