@@ -21,7 +21,8 @@ spec:
         io.kompose.service: notification-service
     spec:
       containers:
-        - image: notification-service
+        - image: mapproject-notification-service
+          imagePullPolicy: IfNotPresent
           name: notification-service
           ports:
             - containerPort: 50051

@@ -36,4 +36,10 @@ spec:
           ports:
             - containerPort: 50051
               protocol: TCP
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "2Gi"
+
       restartPolicy: Always

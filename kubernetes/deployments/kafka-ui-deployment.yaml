@@ -23,15 +23,22 @@ spec:
       containers:
         - env:
             - name: KAFKA_BROKERCONNECT
-              value: kafka:29092
+              value: "crs-kafka-0.kafka-cluster.default.svc.cluster.local:9092,crs-kafka-1.kafka-cluster.default.svc.cluster.local:9092,crs-kafka-2.kafka-cluster.default.svc.cluster.local:9092"
             - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-              value: kafka:9092
+              value: "crs-kafka-0.kafka-cluster.default.svc.cluster.local:9092,crs-kafka-1.kafka-cluster.default.svc.cluster.local:9092,crs-kafka-2.kafka-cluster.default.svc.cluster.local:9092"
             - name: KAFKA_CLUSTERS_0_NAME
-              value: kafka
+              value: "Kafka Cluster"
           image: provectuslabs/kafka-ui
           name: kafka-ui
           ports:
             - containerPort: 8080
               protocol: TCP
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+            requests:
+              memory: "500Mi"
+              cpu: "250m"
       hostname: kafka-ui
       restartPolicy: Always

@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - image: mapproject-event-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           name: event-service
           ports:
             - containerPort: 50051

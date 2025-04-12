@@ -27,4 +27,9 @@ spec:
           ports:
             - containerPort: 27017
               protocol: TCP
+          resources:
+            requests:
+              memory: "200Mi"
+            limits:
+              memory: "400Mi"
       restartPolicy: Always

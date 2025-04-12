@@ -27,11 +27,5 @@ spec:
           ports:
             - containerPort: 8001
               protocol: TCP
-          volumeMounts:
-            - mountPath: /usr/include/google
-              name: gprotos
       restartPolicy: Always
-      volumes:
-        - name: gprotos
-          persistentVolumeClaim:
-            claimName: kong-protos-claim
+

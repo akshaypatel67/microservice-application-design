@@ -42,6 +42,11 @@ spec:
               value: /dev/stderr
           image: kong:latest
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 1Gi
+            requests:
+              memory: 500Mi
           livenessProbe:
             exec:
               command:

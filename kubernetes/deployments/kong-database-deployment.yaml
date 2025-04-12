@@ -34,4 +34,11 @@ spec:
           ports:
             - containerPort: 5432
               protocol: TCP
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: kong-db-pvc
       restartPolicy: Always
+      volumes:
+        - name: kong-db-pvc
+          persistentVolumeClaim:
+            claimName: kong-db-pvc
